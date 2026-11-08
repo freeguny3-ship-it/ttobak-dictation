@@ -1,0 +1,638 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>또박또박 받아쓰기 · 학교 급수표 1~12급</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f6f5ef;color:#223b32;font-family:system-ui,sans-serif}header,main,footer{max-width:1100px;margin:auto;padding:24px}header{display:flex;justify-content:space-between;align-items:center}header b{font-size:22px}small,.muted{color:#6b7d73}.pill{background:#e4ecdc;padding:8px 14px;border-radius:30px;font-size:13px}h1{font-size:clamp(30px,5vw,48px);letter-spacing:-2px;margin:18px 0}p{line-height:1.7} .grid{display:grid;grid-template-columns:1fr 1.15fr;gap:24px;margin-top:30px}.card{background:white;border:1px solid #e1e5da;border-radius:24px;padding:28px}h2{font-size:20px;margin:0 0 18px}textarea{width:100%;height:235px;resize:vertical;border:1px solid #d4ddce;border-radius:14px;padding:16px;font:17px/1.9 system-ui;color:#223b32;background:#fcfdf9}button,select,input{font:inherit}button{cursor:pointer;border:1px solid #d8dfd2;background:white;color:#254838;padding:12px 18px;border-radius:12px}button:hover{background:#edf3e7}button:disabled{opacity:.45;cursor:default}.primary{background:#315b41;color:white;border-color:#315b41}.primary:hover{background:#234931}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.settings{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}label{font-size:14px;display:block}select,input[type=number]{width:100%;margin-top:8px;padding:10px;border:1px solid #d4ddce;border-radius:8px;background:white} .wide{grid-column:1/-1}.stage{text-align:center;min-height:310px;border-radius:18px;background:#f1f5ea;padding:28px 15px;display:flex;flex-direction:column;justify-content:center;align-items:center}.icon{font-size:38px}#sentence{font-size:27px;line-height:1.7;margin:18px 0;word-break:keep-all}#status{font-size:15px;min-height:24px}.bar{height:6px;background:#e3e9dd;border-radius:8px;margin:22px 0}#progress{height:100%;background:#7b9a5e;border-radius:8px;width:0}.controls{justify-content:center;margin-top:20px}.check{display:flex;gap:8px;align-items:center;margin-top:16px}.note{font-size:13px;line-height:1.7;margin-top:18px}.count{float:right;font-size:13px;font-weight:400;color:#6b7d73}footer{font-size:13px;color:#6b7d73}#error{color:#a23826} @media(max-width:760px){.grid{grid-template-columns:1fr}header,main,footer{padding:18px}.card{padding:21px}header .pill{display:none}}
+.grade-picker{font-weight:600}.grade-picker select{background:#f1f5ea;border-color:#c5d3bb;font-size:17px;min-height:48px}.tablet{margin-top:24px}.tablet summary{cursor:pointer;font-weight:600}button{min-height:46px}textarea{height:300px}#unit{min-height:22px;margin:10px 0 14px}.note a{color:inherit} @media(min-width:761px) and (max-width:1000px){.grid{grid-template-columns:1fr 1fr}.card{padding:20px}} @media(max-width:480px){.settings{gap:12px}.controls button{flex:1 1 42%}.grade-picker select{font-size:16px}} </style><header><b>✎ 또박또박</b><span class="pill">하루 10분, 받아쓰기 연습</span></header><main><small>학교 급수표 1~12급 · 최신 버전</small><h1>읽어주는 건 맡기고,<br>아이는 차근차근 써요.</h1><p class="muted">이번 주 급수를 고르거나, 원하는 문장을 직접 입력하세요.<br>한 문장씩 읽고, 쓸 시간을 기다려 드려요.</p><div class="grid"><section class="card"><h2>오늘의 급수표 <span id="count" class="count"></span></h2><label class="grade-picker">연습할 급수<select id="grade" aria-label="급수 선택"><option value="1">1급 · 장면을 상상하며</option><option value="2">2급 · 장면을 상상하며</option><option value="3">3급 · 서로 존중해요</option><option value="4">4급 · 내용을 살펴요</option><option value="5">5급 · 마음을 전해요</option><option value="6">6급 · 마음을 전해요</option><option value="7">7급 · 바른 말로 이야기 나누어요</option><option value="8">8급 · 바른 말로 이야기 나누어요</option><option value="9">9급 · 바른 말로 이야기 나누어요</option><option value="10">10급 · 매체를 경험해요</option><option value="11">11급 · 내 생각은 이래요</option><option value="12">12급 · 나도 작가</option><option value="custom">직접 입력</option><option value="sample">연습 예문</option></select></label><p id="unit" class="note muted"></p><textarea id="text" aria-label="받아쓰기 문장" placeholder="한 줄에 한 문장씩 입력하세요."></textarea><div class="row" style="margin-top:12px"><button id="custom">직접 입력</button><button id="sample">예문 넣기</button><button id="reset">학교 원문으로</button><span id="saveNote" class="note muted">급수별 수정 내용도 이 브라우저에 저장돼요.</span></div><div class="settings"><label>읽기 속도<select id="rate"><option value="0.65">아주 천천히</option><option value="0.8" selected>천천히</option><option value="1">보통</option></select></label><label>한 문장 반복<select id="repeat"><option value="1">1번</option><option value="2" selected>2번</option><option value="3">3번</option></select></label><label>쓸 시간 (초)<input id="wait" type="number" min="3" max="120" value="10"></label><label>읽는 방법<select id="mode"><option value="pause" selected>또박또박 끊어 읽기</option><option value="sentence">자연스럽게 문장 읽기</option></select></label><label>단어 사이 쉬는 시간<select id="gap"><option value="0.35">짧게 · 0.35초</option><option value="0.55" selected>확실하게 · 0.55초</option><option value="0.8">넉넉하게 · 0.8초</option></select></label><label>한국어 목소리<select id="voice"><option value="F1">여자 목소리 1</option><option value="F2">여자 목소리 2</option><option value="F3">여자 목소리 3</option><option value="F4">여자 목소리 4</option><option value="F5">여자 목소리 5</option><option value="M1">남자 목소리 1</option><option value="M2">남자 목소리 2</option><option value="M3">남자 목소리 3</option><option value="M4">남자 목소리 4</option><option value="M5">남자 목소리 5</option></select></label></div><p class="note muted">끊어 읽기는 입력한 띄어쓰기마다 실제로 쉬었다 읽어요. “한 칸 띄고”라는 말은 하지 않아요. 학교 급수표의 표현과 문장부호를 그대로 담았으며, 입력창에서 자유롭게 고칠 수 있어요.</p></section><section class="card"><h2>받아쓰기 시간 <span class="count" id="position">준비</span></h2><div class="stage"><div class="icon">🌱</div><div id="sentence">오늘도 한 문장씩,<br>차근차근 해 볼까요?</div><div id="status" aria-live="polite">시작 버튼을 누르면 읽어 드려요.</div></div><div class="bar"><div id="progress"></div></div><label class="check"><input id="hide" type="checkbox"> 시험처럼 문장 가리기</label><div class="row controls"><button id="preview">♪ 목소리 미리 듣기</button><button id="prev" aria-label="이전 문장">← 이전</button><button id="start" class="primary">▶ 연습 시작</button><button id="stop" disabled>■ 멈추기</button><button id="next">다음 →</button><button id="again">↻ 다시 듣기</button></div><p id="error" role="alert" class="note"></p><p class="note muted">종이와 연필을 준비해 주세요. 멈춘 뒤에는 현재 문장부터 다시 시작해요. Supertonic 무료 AI 음성으로 읽어요. 처음에는 약 400MB 모델을 내려받아요. 문장은 외부로 보내지 않고 이 기기에서 음성으로 만들어요.</p></section></div><details class="card tablet"><summary>태블릿에서도 사용할 수 있나요?</summary><p>갤럭시탭은 Chrome, 아이패드는 Safari의 최신 버전에서 웹주소로 열어 주세요. 처음에는 Wi-Fi로 약 400MB 음성 모델을 내려받아요. 실제 태블릿에서는 아직 시험하지 않았으며, 오래된 기기는 준비가 느리거나 메모리가 부족할 수 있어요. 다른 앱으로 이동하거나 화면을 잠그면 재생이 멈출 수 있습니다.</p><p>파일을 미리보기로 열면 소리가 나지 않을 수 있어요. 브라우저에서 실행되는 웹페이지로 열어 주세요.</p></details></main><footer>또박또박 · 틀려도 괜찮아요. 오늘도 한 걸음 자랐어요. · <a href="https://github.com/supertone-oss-archive/supertonic" target="_blank" rel="noopener">Supertonic</a> (MIT)</footer><script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.23.2/dist/ort.wasm.min.js"></script><script>// Adapted from Supertonic (MIT). See SUPERTONIC-LICENSE.txt.
+
+// Available languages for multilingual TTS
+const AVAILABLE_LANGS = ['en', 'ko', 'ja', 'ar', 'bg', 'cs', 'da', 'de', 'el', 'es', 'et', 'fi', 'fr', 'hi', 'hr', 'hu', 'id', 'it', 'lt', 'lv', 'nl', 'pl', 'pt', 'ro', 'ru', 'sk', 'sl', 'sv', 'tr', 'uk', 'vi', 'na'];
+
+function isValidLang(lang) {
+    return AVAILABLE_LANGS.includes(lang);
+}
+
+/**
+ * Unicode Text Processor
+ */
+class UnicodeProcessor {
+    constructor(indexer) {
+        this.indexer = indexer;
+    }
+
+    call(textList, langList) {
+        const processedTexts = textList.map((text, i) => this.preprocessText(text, langList[i]));
+        
+        const textIdsLengths = processedTexts.map(text => text.length);
+        const maxLen = Math.max(...textIdsLengths);
+        
+        const textIds = processedTexts.map(text => {
+            const row = new Array(maxLen).fill(0);
+            for (let j = 0; j < text.length; j++) {
+                const codePoint = text.codePointAt(j);
+                row[j] = (codePoint < this.indexer.length) ? this.indexer[codePoint] : -1;
+            }
+            return row;
+        });
+        
+        const textMask = this.getTextMask(textIdsLengths);
+        return { textIds, textMask };
+    }
+
+    preprocessText(text, lang) {
+        // TODO: Need advanced normalizer for better performance
+        text = text.normalize('NFKD');
+
+        // Remove emojis (wide Unicode range)
+        const emojiPattern = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}]+/gu;
+        text = text.replace(emojiPattern, '');
+
+        // Replace various dashes and symbols
+        const replacements = {
+            '–': '-',
+            '‑': '-',
+            '—': '-',
+            '_': ' ',
+            '\u201C': '"',  // left double quote "
+            '\u201D': '"',  // right double quote "
+            '\u2018': "'",  // left single quote '
+            '\u2019': "'",  // right single quote '
+            '´': "'",
+            '`': "'",
+            '[': ' ',
+            ']': ' ',
+            '|': ' ',
+            '/': ' ',
+            '#': ' ',
+            '→': ' ',
+            '←': ' ',
+        };
+        for (const [k, v] of Object.entries(replacements)) {
+            text = text.replaceAll(k, v);
+        }
+
+        // Remove special symbols
+        text = text.replace(/[♥☆♡©\\]/g, '');
+
+        // Replace known expressions
+        const exprReplacements = {
+            '@': ' at ',
+            'e.g.,': 'for example, ',
+            'i.e.,': 'that is, ',
+        };
+        for (const [k, v] of Object.entries(exprReplacements)) {
+            text = text.replaceAll(k, v);
+        }
+
+        // Fix spacing around punctuation
+        text = text.replace(/ ,/g, ',');
+        text = text.replace(/ \./g, '.');
+        text = text.replace(/ !/g, '!');
+        text = text.replace(/ \?/g, '?');
+        text = text.replace(/ ;/g, ';');
+        text = text.replace(/ :/g, ':');
+        text = text.replace(/ '/g, "'");
+
+        // Remove duplicate quotes
+        while (text.includes('""')) {
+            text = text.replace('""', '"');
+        }
+        while (text.includes("''")) {
+            text = text.replace("''", "'");
+        }
+        while (text.includes('``')) {
+            text = text.replace('``', '`');
+        }
+
+        // Remove extra spaces
+        text = text.replace(/\s+/g, ' ').trim();
+
+        // If text doesn't end with punctuation, quotes, or closing brackets, add a period
+        if (!/[.!?;:,'\"')\]}…。」』】〉》›»]$/.test(text)) {
+            text += '.';
+        }
+
+        // Validate language
+        if (!isValidLang(lang)) {
+            throw new Error(`Invalid language: ${lang}. Available: ${AVAILABLE_LANGS.join(', ')}`);
+        }
+
+        // Wrap text with language tags
+        text = `<${lang}>${text}</${lang}>`;
+
+        return text;
+    }
+
+    getTextMask(textIdsLengths) {
+        const maxLen = Math.max(...textIdsLengths);
+        return this.lengthToMask(textIdsLengths, maxLen);
+    }
+
+    lengthToMask(lengths, maxLen = null) {
+        const actualMaxLen = maxLen || Math.max(...lengths);
+        return lengths.map(len => {
+            const row = new Array(actualMaxLen).fill(0.0);
+            for (let j = 0; j < Math.min(len, actualMaxLen); j++) {
+                row[j] = 1.0;
+            }
+            return [row];
+        });
+    }
+}
+
+/**
+ * Style class to hold TTL and DP tensors
+ */
+class Style {
+    constructor(ttlTensor, dpTensor) {
+        this.ttl = ttlTensor;
+        this.dp = dpTensor;
+    }
+}
+
+/**
+ * Text-to-Speech class
+ */
+class TextToSpeech {
+    constructor(cfgs, textProcessor, dpOrt, textEncOrt, vectorEstOrt, vocoderOrt) {
+        this.cfgs = cfgs;
+        this.textProcessor = textProcessor;
+        this.dpOrt = dpOrt;
+        this.textEncOrt = textEncOrt;
+        this.vectorEstOrt = vectorEstOrt;
+        this.vocoderOrt = vocoderOrt;
+        this.sampleRate = cfgs.ae.sample_rate;
+    }
+
+    async _infer(textList, langList, style, totalStep, speed = 1.05, progressCallback = null) {
+        const bsz = textList.length;
+        
+        // Process text
+        const { textIds, textMask } = this.textProcessor.call(textList, langList);
+        
+        const textIdsFlat = new BigInt64Array(textIds.flat().map(x => BigInt(x)));
+        const textIdsShape = [bsz, textIds[0].length];
+        const textIdsTensor = new ort.Tensor('int64', textIdsFlat, textIdsShape);
+        
+        const textMaskFlat = new Float32Array(textMask.flat(2));
+        const textMaskShape = [bsz, 1, textMask[0][0].length];
+        const textMaskTensor = new ort.Tensor('float32', textMaskFlat, textMaskShape);
+        
+        // Predict duration
+        const dpOutputs = await this.dpOrt.run({
+            text_ids: textIdsTensor,
+            style_dp: style.dp,
+            text_mask: textMaskTensor
+        });
+        const duration = Array.from(dpOutputs.duration.data);
+        
+        // Apply speed factor to duration
+        for (let i = 0; i < duration.length; i++) {
+            duration[i] /= speed;
+        }
+        
+        // Encode text
+        const textEncOutputs = await this.textEncOrt.run({
+            text_ids: textIdsTensor,
+            style_ttl: style.ttl,
+            text_mask: textMaskTensor
+        });
+        const textEmb = textEncOutputs.text_emb;
+        
+        // Sample noisy latent
+        let { xt, latentMask } = this.sampleNoisyLatent(
+            duration,
+            this.sampleRate,
+            this.cfgs.ae.base_chunk_size,
+            this.cfgs.ttl.chunk_compress_factor,
+            this.cfgs.ttl.latent_dim
+        );
+        
+        const latentMaskFlat = new Float32Array(latentMask.flat(2));
+        const latentMaskShape = [bsz, 1, latentMask[0][0].length];
+        const latentMaskTensor = new ort.Tensor('float32', latentMaskFlat, latentMaskShape);
+        
+        // Prepare constant arrays
+        const totalStepArray = new Float32Array(bsz).fill(totalStep);
+        const totalStepTensor = new ort.Tensor('float32', totalStepArray, [bsz]);
+        
+        // Denoising loop
+        for (let step = 0; step < totalStep; step++) {
+            if (progressCallback) {
+                progressCallback(step + 1, totalStep);
+            }
+            
+            const currentStepArray = new Float32Array(bsz).fill(step);
+            const currentStepTensor = new ort.Tensor('float32', currentStepArray, [bsz]);
+            
+            const xtFlat = new Float32Array(xt.flat(2));
+            const xtShape = [bsz, xt[0].length, xt[0][0].length];
+            const xtTensor = new ort.Tensor('float32', xtFlat, xtShape);
+            
+            const vectorEstOutputs = await this.vectorEstOrt.run({
+                noisy_latent: xtTensor,
+                text_emb: textEmb,
+                style_ttl: style.ttl,
+                latent_mask: latentMaskTensor,
+                text_mask: textMaskTensor,
+                current_step: currentStepTensor,
+                total_step: totalStepTensor
+            });
+            
+            const denoised = Array.from(vectorEstOutputs.denoised_latent.data);
+            
+            // Reshape to 3D
+            const latentDim = xt[0].length;
+            const latentLen = xt[0][0].length;
+            xt = [];
+            let idx = 0;
+            for (let b = 0; b < bsz; b++) {
+                const batch = [];
+                for (let d = 0; d < latentDim; d++) {
+                    const row = [];
+                    for (let t = 0; t < latentLen; t++) {
+                        row.push(denoised[idx++]);
+                    }
+                    batch.push(row);
+                }
+                xt.push(batch);
+            }
+        }
+        
+        // Generate waveform
+        const finalXtFlat = new Float32Array(xt.flat(2));
+        const finalXtShape = [bsz, xt[0].length, xt[0][0].length];
+        const finalXtTensor = new ort.Tensor('float32', finalXtFlat, finalXtShape);
+        
+        const vocoderOutputs = await this.vocoderOrt.run({
+            latent: finalXtTensor
+        });
+        
+        const wav = Array.from(vocoderOutputs.wav_tts.data);
+        
+        return { wav, duration };
+    }
+
+    async call(text, lang, style, totalStep, speed = 1.05, silenceDuration = 0.3, progressCallback = null) {
+        if (style.ttl.dims[0] !== 1) {
+            throw new Error('Single speaker text to speech only supports single style');
+        }
+        const maxLen = (lang === 'ko' || lang === 'ja') ? 120 : 300;
+        const textList = chunkText(text, maxLen);
+        const langList = new Array(textList.length).fill(lang);
+        let wavCat = [];
+        let durCat = 0;
+        
+        for (let i = 0; i < textList.length; i++) {
+            const { wav, duration } = await this._infer([textList[i]], [langList[i]], style, totalStep, speed, progressCallback);
+            
+            if (wavCat.length === 0) {
+                wavCat = wav;
+                durCat = duration[0];
+            } else {
+                const silenceLen = Math.floor(silenceDuration * this.sampleRate);
+                const silence = new Array(silenceLen).fill(0);
+                wavCat = [...wavCat, ...silence, ...wav];
+                durCat += duration[0] + silenceDuration;
+            }
+        }
+        
+        return { wav: wavCat, duration: [durCat] };
+    }
+
+    async batch(textList, langList, style, totalStep, speed = 1.05, progressCallback = null) {
+        return await this._infer(textList, langList, style, totalStep, speed, progressCallback);
+    }
+
+    sampleNoisyLatent(duration, sampleRate, baseChunkSize, chunkCompress, latentDim) {
+        const bsz = duration.length;
+        const maxDur = Math.max(...duration);
+        
+        const wavLenMax = Math.floor(maxDur * sampleRate);
+        const wavLengths = duration.map(d => Math.floor(d * sampleRate));
+        
+        const chunkSize = baseChunkSize * chunkCompress;
+        const latentLen = Math.floor((wavLenMax + chunkSize - 1) / chunkSize);
+        const latentDimVal = latentDim * chunkCompress;
+        
+        const xt = [];
+        for (let b = 0; b < bsz; b++) {
+            const batch = [];
+            for (let d = 0; d < latentDimVal; d++) {
+                const row = [];
+                for (let t = 0; t < latentLen; t++) {
+                    // Box-Muller transform
+                    const u1 = Math.max(0.0001, Math.random());
+                    const u2 = Math.random();
+                    const val = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+                    row.push(val);
+                }
+                batch.push(row);
+            }
+            xt.push(batch);
+        }
+        
+        const latentLengths = wavLengths.map(len => Math.floor((len + chunkSize - 1) / chunkSize));
+        const latentMask = this.lengthToMask(latentLengths, latentLen);
+        
+        // Apply mask
+        for (let b = 0; b < bsz; b++) {
+            for (let d = 0; d < latentDimVal; d++) {
+                for (let t = 0; t < latentLen; t++) {
+                    xt[b][d][t] *= latentMask[b][0][t];
+                }
+            }
+        }
+        
+        return { xt, latentMask };
+    }
+
+    lengthToMask(lengths, maxLen = null) {
+        const actualMaxLen = maxLen || Math.max(...lengths);
+        return lengths.map(len => {
+            const row = new Array(actualMaxLen).fill(0.0);
+            for (let j = 0; j < Math.min(len, actualMaxLen); j++) {
+                row[j] = 1.0;
+            }
+            return [row];
+        });
+    }
+}
+
+/**
+ * Load voice style from JSON files
+ */
+async function loadVoiceStyle(voiceStylePaths, verbose = false) {
+    const bsz = voiceStylePaths.length;
+    
+    // Read first file to get dimensions
+    const firstResponse = await modelFetch(voiceStylePaths[0]);
+    const firstStyle = await firstResponse.json();
+    
+    const ttlDims = firstStyle.style_ttl.dims;
+    const dpDims = firstStyle.style_dp.dims;
+    
+    const ttlDim1 = ttlDims[1];
+    const ttlDim2 = ttlDims[2];
+    const dpDim1 = dpDims[1];
+    const dpDim2 = dpDims[2];
+    
+    // Pre-allocate arrays with full batch size
+    const ttlSize = bsz * ttlDim1 * ttlDim2;
+    const dpSize = bsz * dpDim1 * dpDim2;
+    const ttlFlat = new Float32Array(ttlSize);
+    const dpFlat = new Float32Array(dpSize);
+    
+    // Fill in the data
+    for (let i = 0; i < bsz; i++) {
+        const response = await modelFetch(voiceStylePaths[i]);
+        const voiceStyle = await response.json();
+        
+        // Flatten TTL data
+        const ttlData = voiceStyle.style_ttl.data.flat(Infinity);
+        const ttlOffset = i * ttlDim1 * ttlDim2;
+        ttlFlat.set(ttlData, ttlOffset);
+        
+        // Flatten DP data
+        const dpData = voiceStyle.style_dp.data.flat(Infinity);
+        const dpOffset = i * dpDim1 * dpDim2;
+        dpFlat.set(dpData, dpOffset);
+    }
+    
+    const ttlShape = [bsz, ttlDim1, ttlDim2];
+    const dpShape = [bsz, dpDim1, dpDim2];
+    
+    const ttlTensor = new ort.Tensor('float32', ttlFlat, ttlShape);
+    const dpTensor = new ort.Tensor('float32', dpFlat, dpShape);
+    
+    if (verbose) {
+        console.log(`Loaded ${bsz} voice styles`);
+    }
+    
+    return new Style(ttlTensor, dpTensor);
+}
+
+/**
+ * Load configuration from JSON
+ */
+async function loadCfgs(onnxDir) {
+    const response = await modelFetch(`${onnxDir}/tts.json`);
+    const cfgs = await response.json();
+    return cfgs;
+}
+
+/**
+ * Load text processor
+ */
+async function loadTextProcessor(onnxDir) {
+    const response = await modelFetch(`${onnxDir}/unicode_indexer.json`);
+    const indexer = await response.json();
+    return new UnicodeProcessor(indexer);
+}
+
+/**
+ * Load ONNX model
+ */
+async function loadOnnx(onnxPath, options) {
+    const response = await modelFetch(onnxPath); const bytes = await response.arrayBuffer(); const session = await ort.InferenceSession.create(bytes, options);
+    return session;
+}
+
+/**
+ * Load all TTS components
+ */
+async function loadTextToSpeech(onnxDir, sessionOptions = {}, progressCallback = null) {
+    console.log('Using WebAssembly/WebGPU for inference');
+    
+    const cfgs = await loadCfgs(onnxDir);
+    
+    const dpPath = `${onnxDir}/duration_predictor.onnx`;
+    const textEncPath = `${onnxDir}/text_encoder.onnx`;
+    const vectorEstPath = `${onnxDir}/vector_estimator.onnx`;
+    const vocoderPath = `${onnxDir}/vocoder.onnx`;
+    
+    const modelPaths = [
+        { name: 'Duration Predictor', path: dpPath },
+        { name: 'Text Encoder', path: textEncPath },
+        { name: 'Vector Estimator', path: vectorEstPath },
+        { name: 'Vocoder', path: vocoderPath }
+    ];
+    
+    const sessions = [];
+    for (let i = 0; i < modelPaths.length; i++) {
+        if (progressCallback) {
+            progressCallback(modelPaths[i].name, i + 1, modelPaths.length);
+        }
+        const session = await loadOnnx(modelPaths[i].path, sessionOptions);
+        sessions.push(session);
+    }
+    
+    const [dpOrt, textEncOrt, vectorEstOrt, vocoderOrt] = sessions;
+    
+    const textProcessor = await loadTextProcessor(onnxDir);
+    const textToSpeech = new TextToSpeech(cfgs, textProcessor, dpOrt, textEncOrt, vectorEstOrt, vocoderOrt);
+    
+    return { textToSpeech, cfgs };
+}
+
+/**
+ * Chunk text into manageable segments
+ */
+function chunkText(text, maxLen = 300) {
+    if (typeof text !== 'string') {
+        throw new Error(`chunkText expects a string, got ${typeof text}`);
+    }
+    
+    // Split by paragraph (two or more newlines)
+    const paragraphs = text.trim().split(/\n\s*\n+/).filter(p => p.trim());
+    
+    const chunks = [];
+    
+    for (let paragraph of paragraphs) {
+        paragraph = paragraph.trim();
+        if (!paragraph) continue;
+        
+        // Split by sentence boundaries (period, question mark, exclamation mark followed by space)
+        // But exclude common abbreviations like Mr., Mrs., Dr., etc. and single capital letters like F.
+        const sentences = paragraph.split(/(?<!Mr\.|Mrs\.|Ms\.|Dr\.|Prof\.|Sr\.|Jr\.|Ph\.D\.|etc\.|e\.g\.|i\.e\.|vs\.|Inc\.|Ltd\.|Co\.|Corp\.|St\.|Ave\.|Blvd\.)(?<!\b[A-Z]\.)(?<=[.!?])\s+/);
+        
+        let currentChunk = "";
+        
+        for (let sentence of sentences) {
+            if (currentChunk.length + sentence.length + 1 <= maxLen) {
+                currentChunk += (currentChunk ? " " : "") + sentence;
+            } else {
+                if (currentChunk) {
+                    chunks.push(currentChunk.trim());
+                }
+                currentChunk = sentence;
+            }
+        }
+        
+        if (currentChunk) {
+            chunks.push(currentChunk.trim());
+        }
+    }
+    
+    return chunks;
+}
+
+/**
+ * Write WAV file to ArrayBuffer
+ */
+function writeWavFile(audioData, sampleRate) {
+    const numChannels = 1;
+    const bitsPerSample = 16;
+    const byteRate = sampleRate * numChannels * bitsPerSample / 8;
+    const blockAlign = numChannels * bitsPerSample / 8;
+    const dataSize = audioData.length * 2;
+    
+    // Create ArrayBuffer
+    const buffer = new ArrayBuffer(44 + dataSize);
+    const view = new DataView(buffer);
+    
+    // Write WAV header
+    const writeString = (offset, string) => {
+        for (let i = 0; i < string.length; i++) {
+            view.setUint8(offset + i, string.charCodeAt(i));
+        }
+    };
+    
+    writeString(0, 'RIFF');
+    view.setUint32(4, 36 + dataSize, true);
+    writeString(8, 'WAVE');
+    writeString(12, 'fmt ');
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true); // PCM
+    view.setUint16(22, numChannels, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, byteRate, true);
+    view.setUint16(32, blockAlign, true);
+    view.setUint16(34, bitsPerSample, true);
+    writeString(36, 'data');
+    view.setUint32(40, dataSize, true);
+    
+    // Write audio data
+    const int16Data = new Int16Array(audioData.length);
+    for (let i = 0; i < audioData.length; i++) {
+        const clamped = Math.max(-1.0, Math.min(1.0, audioData[i]));
+        int16Data[i] = Math.floor(clamped * 32767);
+    }
+    
+    const dataView = new Uint8Array(buffer, 44);
+    dataView.set(new Uint8Array(int16Data.buffer));
+    
+    return buffer;
+}
+
+</script><script>// 학교에서 받은 급수표 사진 두 장을 옮김. 단원·문장·문장부호·띄어쓰기 보존.
+const SCHOOL_GRADES = [
+{grade:1,unit:'1. 장면을 상상하며',lines:[
+'콧잔등에 땀이 송골송골','눈처럼 하얗고 예쁜 집','뭐라도 묻을까 봐','호기심이 많아서','망가뜨릴지도 몰라.','많이 생겼거든.','지쳐서 곯아떨어졌어.','그래도 할머니는 괜찮대.','계속 지우고, 닦았어.','곰곰이 지켜보던']},
+{grade:2,unit:'1. 장면을 상상하며',lines:[
+'왜 멀쩡한 의자를','골똘히 생각했어요.','도무지 찾을 수가 없어','간지럼을 태우면','금세 미소를 띨 거예요.','속삭이듯 조심스레','아낌없이 주세요.','구름 위를 훨훨 날아','재미있는 걸 재미없게','장대비에 쓸려 갈까 봐']},
+{grade:3,unit:'2. 서로 존중해요',lines:[
+'꽃같이 예쁜 말','공감하며 들어 준다.','사용하면 안 돼.','내가 도와줄게.','책을 머리맡에 두고','말을 귀담아들어야 해요.','네 덕분에 알게 됐어.','아는 건 많지.','찌푸린 표정으로','여쭤보면 어떨까?']},
+{grade:4,unit:'3. 내용을 살펴요',lines:[
+'무늬도 다양합니다.','앞이 넓고 뒤가 좁다.','잘못을 뉘우치고 있어.','내 볼을 핥아서','우산을 잃어버렸어요.','빗자루를 어떻게 만드는','소금물에 삶아요.','끝을 가지런히 잘라','손가락 굵기만큼씩 묶어.','소매가 짧은 옷']},
+{grade:5,unit:'4. 마음을 전해요',lines:[
+'얼른 집에 가서','코를 벌름거리며','이가 너무 아파요!','냄새 맡은 값이라니요?','어처구니가 없었어요.','손뼉을 쳤어요.','눈을 동그랗게 뜨고','엽전 소리를 들었지요?','주변을 두리번거렸지요.','웃음을 터뜨렸답니다.']},
+{grade:6,unit:'4. 마음을 전해요',lines:[
+'이렇게 커다랗다니!','어깨를 들썩거렸습니다.','방바닥을 데굴데굴','아무것도 안 했잖아.','너무 얄미웠던 거야.','호랑이는 꾀를 내었어.','발을 헛디뎌','얼른 고개를 끄덕였어.','온 힘을 다해 쏜살같이','남은 떡 짊어지고 왔어.']},
+{grade:7,unit:'5. 바른 말로 이야기 나누어요',lines:[
+'손으로 달을 가리키다.','꾀를 부려 일부러','소금을 싣고 가던','색이 바래고 있어요.','물건값 계산이 틀렸어.','길을 잃어버렸다.','번호를 잊어버렸어.','왠지 쓸쓸했습니다.','사막처럼 황량해.','뭐 좋은 수가 없을까?']},
+{grade:8,unit:'5. 바른 말로 이야기 나누어요',lines:[
+'무릎을 치며 일어나','그렇게 하루도 빠짐없이','눈에 띄었습니다.','코를 갖다 대었습니다.','아름다움을 뽐내며','다른 반이라 아쉽네.','팥죽을 맛있게 쑤었어요.','세워 놓은 지게가','할머니, 왜 울어요?','호랑이를 짊어졌어요.']},
+{grade:9,unit:'5. 바른 말로 이야기 나누어요',lines:[
+'마리솔은 화가예요.','눈에 띄는 독특한 옷','금세 시끌시끌했어요.','샅샅이 뒤졌어요.','줄곧 생각했어요.','해가 지평선 가까이로','멋진 꿈을 꾸었어요.','온갖 색깔이 소용돌이','셀 수 없이 많은 색깔','빙그레 웃었어요.']},
+{grade:10,unit:'6. 매체를 경험해요',lines:[
+'물어도 씹지 않는','이름이 뭐예요?','남기지 않고 다 먹었어.','마음이 뒤숭숭한','물을 계속 튼 채로','정말 생생했는데!','터지게 된 걸까?','두 볼을 세게 꼬집어','물 오염과 낭비를 막는','순우리말로 누리집']},
+{grade:11,unit:'7. 내 생각은 이래요',lines:[
+'우리가 힘을 합쳐','문을 잘 닫고 다니자.','반려견이 짖게 되면','귀찮고 힘들다는 생각','며칠 동안만 꾸준히','몸무게를 조절하는','제목은 무엇인가요?','오늘은 날이 참 맑네.','된장찌개 끓는 소리가','생각에 대한 까닭']},
+{grade:12,unit:'8. 나도 작가',lines:[
+'쌓인 눈을 밟을 때마다','앞서가는 친구들도','떡볶이집 지나서','담요도 덮어 주고','낯선 손님에게는','흠뻑 젖은 채 빈집에','너덜너덜 찢겨 있어','이름이 커다랗게','쾅 찍혀 있었다.','달이 유난히도 밝았어요.']}
+];
+</script><script>// Preserve spoken edges while removing model-generated excess silence.
+function trimSpeech(samples, sampleRate) {
+  let first=0,last=samples.length;
+  while(first<last&&Math.abs(samples[first])<0.003)first++;
+  while(last>first&&Math.abs(samples[last-1])<0.003)last--;
+  if(first===last)return samples;
+  const margin=Math.round(sampleRate*0.04);
+  return samples.slice(Math.max(0,first-margin),Math.min(samples.length,last+margin));
+}
+function joinSpeech(chunks,sampleRate,gapSeconds){
+  if(!chunks.length)return new Float32Array();
+  const gap=Math.round(sampleRate*gapSeconds);
+  const length=chunks.reduce((sum,chunk)=>sum+chunk.length,0)+gap*(chunks.length-1);
+  const out=new Float32Array(length);let offset=0;
+  chunks.forEach((chunk,i)=>{out.set(chunk,offset);offset+=chunk.length+(i<chunks.length-1?gap:0)});
+  return out;
+}
+</script><script>const $=id=>document.getElementById(id);
+const MODEL='https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46';
+const sample='아침에 일찍 일어났습니다.\n친구와 사이좋게 지냅니다.\n운동장에서 공을 찼습니다.\n꽃이 활짝 피었습니다.\n내일도 학교에 갑니다.';
+const STORAGE='ttobak-school-v1';
+let items=[],index=0,epoch=0,timer=null,pending=null,viewed=false,busy=false,modelPromise=null,tts=null,audioContext=null,source=null;
+const styles=new Map(),audioCache=new Map(),wordCache=new Map();
+let state={selected:'1',drafts:{},settings:{}};
+try{const stored=JSON.parse(localStorage.getItem(STORAGE));if(stored&&typeof stored==='object'){state={...state,...stored,drafts:stored.drafts||{},settings:stored.settings||{}};}else{const old=localStorage.getItem('ttobak-text');if(old)state.drafts.custom=old}}catch{}
+if(!$('grade').options.length){for(const grade of SCHOOL_GRADES)$('grade').add(new Option(`${grade.grade}급 · ${grade.unit.replace(/^\d+\. /,'')}`,String(grade.grade)));
+$('grade').add(new Option('직접 입력','custom'));$('grade').add(new Option('연습 예문','sample'));}
+if(![...$('grade').options].some(option=>option.value===state.selected))state.selected='1';
+for(const name of ['rate','repeat','wait','mode','gap','voice']){if(state.settings[name]!==undefined){const control=$(name);const value=String(state.settings[name]);if(control.tagName!=='SELECT'||[...control.options].some(option=>option.value===value))control.value=value;}$(name).onchange=()=>{state.settings[name]=$(name).value;save();if(name==='mode')$('gap').disabled=$('mode').value==='sentence';};}
+function save(){try{localStorage.setItem(STORAGE,JSON.stringify(state));$('saveNote').textContent='급수별 입력 내용이 이 브라우저에 저장돼요.'}catch{$('saveNote').textContent='브라우저 저장 공간이 부족해요. 입력 내용을 따로 보관해 주세요.'}}
+function original(key){if(key==='custom')return '';if(key==='sample')return sample;return SCHOOL_GRADES.find(g=>String(g.grade)===key)?.lines.join('\n')||''}
+function selectGrade(key){if(busy)return;cancel();state.selected=key;$('grade').value=key;$('text').value=typeof state.drafts[key]==='string'?state.drafts[key]:original(key);index=0;viewed=false;const g=SCHOOL_GRADES.find(g=>String(g.grade)===key);$('unit').textContent=g?`2학년 2학기 · ${g.unit} · 학교 급수표 10문장`:key==='sample'?'문장을 바꾸며 자유롭게 연습해 보세요.':'한 줄에 한 문장씩 입력해 주세요.';$('reset').hidden=!g;$('sentence').textContent='오늘도 한 문장씩, 차근차근 해 볼까요?';$('status').textContent='시작 버튼을 누르면 읽어 드려요.';$('error').textContent='';parse();render();save();}
+function parse(){items=$('text').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);index=Math.min(index,Math.max(0,items.length-1));$('count').textContent=items.length+'문장';}
+function render(){$('position').textContent=items.length?`${index+1} / ${items.length} 문장`:'문장 없음';$('progress').style.width=items.length?`${index/items.length*100}%`:'0';if(viewed)$('sentence').textContent=$('hide').checked?'귀 기울여 듣고 써 보세요.':items[index]||'급수표 문장을 입력해 주세요.';}
+function setBusy(value){busy=value;for(const name of ['start','again','preview','sample','custom','reset','grade','prev','next','text','voice','mode','gap','rate','repeat','wait'])$(name).disabled=value;$('stop').disabled=!value;if(!value)$('gap').disabled=$('mode').value==='sentence';}
+function cancel(){epoch++;clearTimeout(timer);if(source){source.onended=null;try{source.stop()}catch{}source.disconnect();source=null}if(pending){const done=pending;pending=null;done(false)}$('stop').disabled=true;}
+function delay(ms,id){return new Promise(resolve=>{pending=resolve;timer=setTimeout(()=>{pending=null;resolve(id===epoch)},ms)})}
+async function modelFetch(url){let cache;try{cache=await caches.open('ttobak-supertonic3-v1');const hit=await cache.match(url);if(hit)return hit}catch{}const response=await fetch(url);if(!response.ok)throw new Error(`파일을 불러오지 못했어요 (${response.status}).`);if(cache){try{await cache.put(url,response.clone())}catch{}}return response;}
+async function ensureModel(id){if(modelPromise)return modelPromise;if(typeof ort==='undefined')throw new Error('음성 엔진을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.');ort.env.wasm.numThreads=1;ort.env.wasm.wasmPaths='https://cdn.jsdelivr.net/npm/onnxruntime-web@1.23.2/dist/';modelPromise=loadTextToSpeech(MODEL+'/onnx',{executionProviders:['wasm'],graphOptimizationLevel:'all'},(_,current,total)=>{if(id===epoch)$('status').textContent=`음성 모델 준비 중 ${current}/${total} · 처음에는 약 400MB를 내려받아요.`;}).then(result=>{tts=result.textToSpeech;return tts}).catch(error=>{modelPromise=null;throw error});return modelPromise;}
+async function getStyle(voice){if(!styles.has(voice))styles.set(voice,loadVoiceStyle([`${MODEL}/voice_styles/${voice}.json`]).catch(error=>{styles.delete(voice);throw error}));return styles.get(voice);}
+async function synthesize(text,id,settings){const key=JSON.stringify([text,settings.voice,settings.rate]);if(wordCache.has(key))return wordCache.get(key);const style=await getStyle(settings.voice);if(id!==epoch)return null;const result=await tts.call(text,'ko',style,8,settings.rate,0.35);if(id!==epoch)return null;const length=Math.min(result.wav.length,Math.floor(result.duration[0]*tts.sampleRate));const data=trimSpeech(new Float32Array(result.wav.slice(0,length)),tts.sampleRate);if(wordCache.size>=120)wordCache.delete(wordCache.keys().next().value);wordCache.set(key,data);return data;}
+async function speak(text,id,settings,number=null){if(id!==epoch)return false;const key=JSON.stringify([text,settings.voice,settings.rate,settings.mode,settings.gap,number]);let data=audioCache.get(key);if(!data){const parts=settings.mode==='pause'?text.trim().split(/\s+/):[text];if(number!==null)parts.unshift(`${number}번.`);const chunks=[];for(let i=0;i<parts.length;i++){if(id!==epoch)return false;$('status').textContent=`또박또박 읽을 소리 준비 중 · ${i+1}/${parts.length}`;const chunk=await synthesize(parts[i],id,settings);if(!chunk)return false;chunks.push(chunk);await new Promise(resolve=>setTimeout(resolve,0));}data=joinSpeech(chunks,tts.sampleRate,settings.mode==='pause'?settings.gap:0.65);if(audioCache.size>=24)audioCache.delete(audioCache.keys().next().value);audioCache.set(key,data);}if(id!==epoch)return false;await audioContext.resume();if(id!==epoch)return false;const buffer=audioContext.createBuffer(1,data.length,tts.sampleRate);buffer.copyToChannel(data,0);return new Promise(resolve=>{pending=resolve;source=audioContext.createBufferSource();source.buffer=buffer;source.connect(audioContext.destination);source.onended=()=>{source?.disconnect();source=null;pending=null;resolve(id===epoch)};$('status').textContent='귀 기울여 듣고 써 보세요.';source.start()});}
+async function run(single=false,preview=false){if(busy)return;cancel();const id=epoch;$('error').textContent='';parse();if(!preview&&!items.length){$('error').textContent='먼저 문장을 입력해 주세요.';return}setBusy(true);const settings={voice:$('voice').value,rate:Number($('rate').value),repeat:Number($('repeat').value),mode:$('mode').value,gap:Number($('gap').value),wait:Math.min(120,Math.max(3,Number($('wait').value)||10))};try{audioContext??=new (window.AudioContext||window.webkitAudioContext)();await audioContext.resume();await ensureModel(id);if(id!==epoch)return;if(preview){await speak('안녕하세요. 천천히 듣고 써 보세요.',id,settings);if(id===epoch)$('status').textContent='다른 목소리도 골라서 들어 보세요.';return}viewed=true;do{render();for(let n=0;n<settings.repeat;n++){if(!await speak(items[index],id,settings,n===0?index+1:null))return;if(n<settings.repeat-1&&!await delay(1800,id))return;}if(single)break;for(let t=settings.wait;t>0;t--){$('status').textContent=`천천히 써 보세요 · ${t}초`;if(!await delay(1000,id))return}if(index===items.length-1)break;index++;}while(id===epoch);if(id===epoch){$('status').textContent=single?'다시 듣기를 마쳤어요.':'모두 마쳤어요. 정말 잘했어요!';if(!single)$('progress').style.width='100%';}}catch(error){if(id===epoch){$('error').textContent=`음성을 준비하지 못했어요. ${error.message} 인터넷 연결을 확인하고 다시 눌러 주세요.`;$('status').textContent='다시 시도할 수 있어요.';}}finally{setBusy(false);}}
+$('text').oninput=()=>{parse();viewed=false;state.drafts[state.selected]=$('text').value;save();render()};$('grade').onchange=()=>selectGrade($('grade').value);$('custom').onclick=()=>selectGrade('custom');$('sample').onclick=()=>selectGrade('sample');$('reset').onclick=()=>{delete state.drafts[state.selected];selectGrade(state.selected)};$('start').onclick=()=>run();$('again').onclick=()=>run(true);$('preview').onclick=()=>run(true,true);$('stop').onclick=()=>{cancel();$('status').textContent='멈췄어요. 진행 중인 음성 준비가 끝나면 다시 시작할 수 있어요.'};for(const [name,step]of[['prev',-1],['next',1]])$(name).onclick=()=>{cancel();parse();index=Math.max(0,Math.min(items.length-1,index+step));viewed=true;render();$('status').textContent='시작 또는 다시 듣기를 눌러 주세요.'};$('hide').onchange=()=>{if(!viewed){$('sentence').textContent=$('hide').checked?'귀 기울여 듣고 써 보세요.':'오늘도 한 문장씩, 차근차근 해 볼까요?'}else render()};window.addEventListener('pagehide',cancel);selectGrade(state.selected);setBusy(false);
+</script></html>
+
+
